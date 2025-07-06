@@ -1,0 +1,237 @@
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+h1, h2, h4 {
+    font-weight: 700;
+    color: #1c1c1e;
+}
+.card {
+    border: 0;
+    border-radius: 15px;
+    background-color: #fff;
+    transition: box-shadow 0.18s, transform 0.13s;
+    box-shadow: 0 0 12px rgba(0,0,0,0.06);
+    min-height: 225px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card:hover {
+    transform: translateY(-5px) scale(1.012);
+    box-shadow: 0 10px 28px rgba(13,110,253,0.16);
+}
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #0d6efd 80%, #4391f7 100%) !important;
+    border-radius: 15px 15px 0 0;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.85rem 1rem;
+    letter-spacing: .1px;
+}
+.card-body {
+    padding: 1rem 1.15rem 0.8rem 1.15rem;
+}
+.card-title, .card-body h6 {
+    color: #0d6efd;
+    font-size: 1.06rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+}
+.card-footer {
+    background: #f8fafd;
+    border-radius: 0 0 15px 15px;
+    border: none;
+    text-align: center;
+    padding: 0.6rem 1rem 0.85rem 1rem;
+}
+.card-footer a.btn {
+    font-size: 0.98rem;
+    font-weight: 600;
+    border-radius: 1.3rem;
+    padding: 0.38rem 1.25rem;
+    transition: background 0.13s, color 0.13s;
+    box-shadow: 0 1.5px 7px rgba(13,110,253,0.07);
+    background: #0d6efd;
+    color: #fff;
+}
+.card-footer a.btn:hover {
+    background: #0958c8;
+    color: #fff;
+}
+.card-clima { font-size: 0.98rem; }
+.icono-clima { font-size: 1.65rem; line-height: 1; }
+.list-unstyled li {
+    background: #f6faff;
+    border-radius: 7px;
+    margin-bottom: 0.23rem;
+    padding: 0.45rem 1rem 0.45rem 0.85rem;
+    border-left: 3px solid #0d6efd19;
+    font-size: 0.98rem;
+}
+.list-unstyled span {
+    color: #495057;
+    font-weight: 500;
+}
+.btn-success {
+    padding: 0.58rem 1.8rem;
+    font-weight: 600;
+    font-size: 1.07rem;
+    border-radius: 2rem;
+    background: linear-gradient(90deg, #29c76f 85%, #45e08b 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(39,174,96,0.08);
+    transition: background 0.14s;
+}
+.btn-success:hover {
+    background: #168f49 !important;
+}
+/* Modal empresarial */
+.modal-content {
+    border-radius: 20px;
+    border: 2px solid #007bff22;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
+}
+.modal-header {
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, #0d6efd 93%, #6eb6f5 100%);
+    border-bottom: none;
+}
+.modal-title, .modal-header h5 {
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.13rem;
+    letter-spacing: .6px;
+}
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 1.01rem;
+}
+.form-control, .form-select {
+    border-radius: 1.2rem;
+    border: 1.5px solid #d1d5db;
+    font-size: 0.98rem;
+    padding: 0.57rem 1rem;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.14rem #0d6efd33;
+}
+.modal-footer {
+    border-top: none;
+    padding-bottom: 1.1rem;
+    border-radius: 0 0 20px 20px;
+    background: #f8fafd;
+}
+/* Panel tren WIDGET */
+#info-tren {
+    background: #fff;
+    border: 1.7px solid #0d6efd30;
+    border-radius: 15px;
+    box-shadow: 0 2px 14px rgba(13,110,253,0.07);
+    padding: 12px 18px 13px 16px;
+    margin-top: 22px;
+    max-width: 265px;
+    min-width: 180px;
+    font-size: 0.93rem;
+    position: sticky;
+    top: 24px;
+    right: 0;
+}
+#info-tren h4 {
+    font-size: 1rem;
+    margin-bottom: 1.05rem;
+    color: #0d6efd;
+    text-align: left;
+    letter-spacing: .1px;
+}
+#info-tren .mb-2,
+#info-tren .small {
+    font-size: 0.97rem;
+    margin-bottom: 0.38rem;
+}
+#info-tren .fw-semibold {
+    font-weight: 600;
+}
+@media (max-width: 1200px) {
+    #info-tren { max-width: 98%; min-width: 0; }
+}
+@media (max-width: 991px) {
+    .card { min-height: 155px;}
+    #info-tren { max-width: 100%; padding: 9px 12px;}
+}
+@media (max-width: 767px) {
+    .card { min-height: 110px;}
+    #info-tren { max-width: 100%; margin-top: 12px;}
+}
+
+/* Botón “Ver” con degradado azul → morado */
+.card-footer > .btn-primary {
+    background: linear-gradient(
+            90deg,
+            #0d6efd 0%,
+            #9c0dfd 100%
+    ) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(13,110,253,0.2) !important;
+    transition: background .15s, box-shadow .15s !important;
+}
+.card-footer > .btn-primary:hover {
+    background: linear-gradient(
+            90deg,
+            #0958c8 0%,
+            #7a0bbe 100%
+    ) !important;
+    box-shadow: 0 4px 16px rgba(156,13,253,0.3) !important;
+}
+
+
+
+
+/* Asegúrate de que tu .header-box tenga fondo primary */
+.header-box {
+    background-color: #0d6efd;
+    padding: 1rem 2rem;
+    clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+    margin-bottom: 1.5rem;
+}
+
+/* Fuerza el texto blanco para todo h1 dentro de .header-box */
+.header-box h1 {
+    color: #fff !important;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+
+/* ===== Subtítulo con subrayado ===== */
+.subtitle-box {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #0d6efd;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding-bottom: 0.2rem;
+}
+.subtitle-box::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: #0d6efd;
+    border-radius: 2px;
+}
+
+
+
+
+
+

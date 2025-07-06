@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Viaje en Tiempo Real</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="container mt-4">
+<h1 class="mb-4 text-center"> Simulación de Viaje en Tiempo Real</h1>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="mb-3">
+      <p>
+        Estación actual del tren: <strong id="posicion-tren">Cargando...</strong>
+      </p>
+      <p><strong id="direccion-tren">Cargando dirección...</strong></p>
+
+      <p><strong>Tu estación:</strong> <span th:text="${origen.nombre_estacion}">Origen</span></p>
+      <p><strong>Destino:</strong> <span th:text="${destino.nombre_estacion}">Destino</span></p>
+    </div>
+
+    <!-- ZONA TURÍSTICA SELECCIONADA -->
+    <div class="mt-4" th:if="${zonaTuristica != null}">
+      <h4 class="text-primary"></h4> Zona Turística Seleccionada</h4>
+      <div class="card border-primary shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${zonaTuristica.nombre}">Nombre zona</h5>
+          <p class="card-text">
+            <strong>Dirección:</strong>
+            <span th:text="${zonaTuristica.direccion}">Dirección</span><br />
+            <strong>Duración Caminata:</strong>
+            <span th:text="${zonaTuristica.duracionCaminata}">0</span> minutos<br />
+            <strong>Servicios:</strong>
+            <span th:text="${zonaTuristica.servicios}">Servicios</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Tiempo estimado para que el tren llegue a ti:</h3>
+    <div id="llegada">Cargando...</div>
+
+    <h3>Tiempo estimado desde tu estación hasta el destino:</h3>
+    <div id="viaje">Cargando...</div>
+  </div>
+</div>
+
+<!-- Datos ocultos para JS -->
+<input type="hidden" id="tiempoLlegada" th:value="${tiempoLlegada}" />
+<input type="hidden" id="tiempoViaje" th:value="${tiempoViaje}" />
+<input type="hidden" id="origen" th:value="${origen.ordenEstacion}" />
+<input type="hidden" id="destino" th:value="${destino.ordenEstacion}" />
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let llegada = parseInt(document.getElementById("tiempoLlegada").value);
+  let viaje = parseInt(document.getElementById("tiempoViaje").value);
+  let estado = "esperando";
+  let viajeIniciado = false;
+
+  function formato(segundos) {
+    const min = Math.floor(segundos / 60);
+    const seg = segundos % 60;
+    return `${min} min ${seg} seg`;
+  }
+
+  function actualizarContadores() {
+    if (estado === "esperando") {
+      if (llegada > 0) {
+        document.getElementById("llegada").textContent = formato(llegada--);
+      } else {
+        document.getElementById("llegada").textContent =
+                "¡El tren llegó a tu estación!";
+        estado = "viajando";
+      }
+    } else if (estado === "viajando") {
+      if (viaje > 0) {
+        document.getElementById("viaje").textContent = formato(viaje--);
+      } else {
+        document.getElementById("viaje").textContent =
+                "¡Llegaste a tu destino!";
+        estado = "finalizado";
+      }
+    }
+  }
+
+  function actualizarEstadoTren() {
+    fetch("/api/tren/estado")
+            .then((r) => r.json())
+            .then((data) => {
+              document.getElementById("posicion-tren").textContent =
+                      "Estación " + data.numero;
+              document.getElementById("direccion-tren").textContent =
+                      data.direccion;
+
+              const origen = parseInt(document.getElementById("origen").value);
+              if (data.numero === origen && estado === "esperando") {
+                llegada = 0;
+              }
+            })
+            .catch((e) => console.error("Error actualizando estado del tren", e));
+  }
+
+  // Timer
+  setInterval(actualizarContadores, 1000);
+  setInterval(actualizarEstadoTren, 1000);
+</script>
+</body>
+</html>

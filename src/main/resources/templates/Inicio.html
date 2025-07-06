@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vista General del Sistema</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/estilos.css}" href="/css/estilos.css" />
+</head>
+<body class="container py-4">
+<div class="row">
+  <!-- Sección principal -->
+  <div class="col-lg-9">
+    <div class="header-box">
+      <h1>Sistema de Zonas Turísticas – MTC</h1>
+    </div>
+
+    <!-- Subtítulo con subrayado -->
+    <h2 class="subtitle-box">Catálogo de Estaciones</h2>
+
+    <!-- Cards -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
+      <div class="col" th:each="estacion, iterStat : ${estaciones}">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <strong th:text="'Estación '+ ${estacion.id_estacion}+' : ' + ${estacion.nombre_estacion}">
+              Estación X
+            </strong>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <h6>Zonas Turísticas</h6>
+            <ul class="list-unstyled mb-3 small">
+              <li th:each="zona : ${estacion.zonas}" class="d-flex align-items-center justify-content-between">
+                <span>
+                  • <span th:text="${zona.nombre}">Zona A</span>
+                </span>
+              </li>
+            </ul>
+            <div class="mt-auto text-center card-clima">
+              <div th:id="'icon-' + ${estacion.id_estacion}" class="icono-clima mb-1">🌤️</div>
+              <div th:id="'temp-' + ${estacion.id_estacion}">-- °C</div>
+              <div th:id="'cond-' + ${estacion.id_estacion}" class="text-capitalize text-muted">condición</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a th:href="@{'/zonas/' + ${estacion.id_estacion}}" class="btn btn-primary">
+              <i class="bi bi-eye me-1"></i> Ver
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Botón de compra -->
+    <button
+  type="button"
+  class="btn btn-success mt-4 shadow-sm"
+  data-bs-toggle="modal"
+  data-bs-target="#modalCompra"
+>
+  <i class="bi bi-ticket-perforated-fill me-1"></i> Comprar Boleto
+</button>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="modalCompra"
+  tabindex="-1"
+  aria-labelledby="modalCompraLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form th:action="@{/viaje/guardar-boleta}" method="post">
+        <div class="modal-header bg-gradient bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-ticket-perforated-fill me-2"></i> Comprar Boleto de Viaje
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Fila con Nombre y Teléfono lado a lado -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="bi bi-person-fill me-1"></i> Tu nombre:
+              </label>
+              <input
+                type="text"
+                name="nombrePasajero"
+                class="form-control"
+                required
+                minlength="3"
+                maxlength="50"
+                placeholder="Ej. Juan Pérez"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="bi bi-phone-fill me-1"></i> Tu número de teléfono:
+              </label>
+              <input
+                type="text"
+                name="telefonoCliente"
+                class="form-control"
+                required
+                minlength="9"
+                maxlength="15"
+                placeholder="Ej. 987654321"
+              />
+            </div>
+          </div>
+
+          <!-- Cantidad de boletos -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="bi bi-123 me-1"></i> Cantidad de boletos:
+            </label>
+            <input
+              type="number"
+              name="cantidadBoletos"
+              class="form-control"
+              min="1"
+              max="10"
+              required
+              placeholder="Ej. 2"
+            />
+          </div>
+
+          <!-- Estación origen -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="bi bi-geo-alt-fill me-1 text-danger"></i> Estación origen:
+            </label>
+            <select class="form-select" name="estacionOrigen" required>
+              <option value="">Seleccione...</option>
+              <option
+                th:each="estacion : ${estaciones}"
+                th:value="${estacion.ordenEstacion}"
+                th:text="${estacion.nombre_estacion}"
+              ></option>
+            </select>
+          </div>
+
+          <!-- Estación destino -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="bi bi-flag-fill me-1 text-success"></i> Estación destino:
+            </label>
+            <select
+              class="form-select"
+              name="estacionDestino"
+              id="selectDestino"
+              required
+            >
+              <option value="">Seleccione...</option>
+              <option
+                th:each="estacion : ${estaciones}"
+                th:value="${estacion.ordenEstacion}"
+                th:text="${estacion.nombre_estacion}"
+              ></option>
+            </select>
+          </div>
+
+          <!-- Zonas turísticas -->
+          <div class="mt-4" id="zonaContainer">
+            <h6 class="fw-bold">
+              <i class="bi bi-map-fill me-2 text-info"></i> Zonas Turísticas Disponibles:
+            </h6>
+            <div
+              th:each="estacion : ${estaciones}"
+              th:id="'zona-estacion-' + ${estacion.ordenEstacion}"
+              class="mb-3"
+              style="display: none"
+            >
+              <table class="table table-sm table-bordered shadow-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th>Seleccionar</th>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Duración (min)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="zona : ${estacion.zonas}">
+                    <td>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="idZona"
+                        th:value="${zona.id}"
+                        required
+                      />
+                    </td>
+                    <td th:text="${zona.nombre}">Nombre zona</td>
+                    <td th:text="${zona.direccion}">Dirección</td>
+                    <td th:text="${zona.duracionCaminata}">0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="bi bi-x-circle-fill me-1"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-play-fill me-1"></i> Comprar Boleta/s
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    <br><br><br>
+  </div>
+  <!-- Panel derecho: WIDGET TREN -->
+  <div class="col-lg-3 ms-auto">
+    <div id="info-tren" class="shadow-sm">
+      <h4 class="fw-bold mb-3">
+        <i class="bi bi-train-front-fill me-2"></i> Ubicación del Tren
+      </h4>
+      <div class="mb-2">
+        <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+        <span class="fw-semibold text-dark">Estación actual:</span>
+        <div class="ms-4 text-muted small">
+          <span id="n1-tren" class="me-1"></span> -
+          <span id="posicion1-tren" class="fw-semibold text-primary">Cargando...</span>
+        </div>
+      </div>
+      <div class="mb-2">
+        <i class="bi bi-arrow-right-circle-fill text-primary me-1"></i>
+        <span class="fw-semibold text-dark">Destino:</span>
+        <div class="ms-4 text-muted small">
+          <span id="n2-tren" class="me-1"></span> -
+          <span id="posicion2-tren" class="fw-semibold text-primary">Cargando...</span>
+        </div>
+      </div>
+      <div class="small">
+        <i class="bi bi-signpost-2-fill text-primary me-1"></i>
+        <span class="fw-semibold text-dark">Sentido:</span>
+        <span id="direccion-tren" class="fw-semibold text-primary">Cargando...</span>
+      </div>
+
+      <div class="mt-3 p-3 shadow-sm" style="background:#fff; border-radius:12px; border:1px solid rgba(13,110,253,0.1);">
+        <label for="selectEstacionUsuario" class="form-label fw-bold mb-1">
+          Selecciona tu estación:
+        </label>
+        <select
+                id="selectEstacionUsuario"
+                class="form-select form-select-sm"
+                onchange="actualizarUsuarioEstacion(this.value)"
+        >
+          <option value="" disabled selected>-- Elige estación --</option>
+          <option
+                  th:each="est : ${estaciones}"
+                  th:value="${est.ordenEstacion}"
+                  th:text="'E' + ${est.ordenEstacion} + ' – ' + ${est.nombre_estacion}"
+          >
+            Estación X – Nombre
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <di>
+      <div id="tiempo-llegada" class="mt-2 text-muted fw-semibold"></div>
+    </di>
+
+  </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let estacionActualTren = null;
+  let sentidoTren = null;
+  let intervaloCronometro = null;
+
+  function actualizarEstadoTren() {
+    fetch("/api/tren/estado")
+            .then((res) => res.json())
+            .then((data) => {
+              document.getElementById("posicion1-tren").textContent = data.estacion1;
+              document.getElementById("posicion2-tren").textContent = data.estacion2;
+              document.getElementById("n1-tren").textContent = data.numero;
+              document.getElementById("n2-tren").textContent = data.numero2;
+              document.getElementById("direccion-tren").textContent = data.direccion;
+
+              estacionActualTren = data.estacion1;
+              sentidoTren = data.direccion;
+            })
+            .catch((err) => console.error("Error al obtener estado del tren:", err));
+  }
+
+  setInterval(actualizarEstadoTren, 1000);
+  actualizarEstadoTren();
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectDestino = document.getElementById("selectDestino");
+    const todasZonas = document.querySelectorAll('[id^="zona-estacion-"]');
+    const comboEstacion = document.getElementById("selectEstacionUsuario");
+
+    selectDestino.addEventListener("change", function () {
+      todasZonas.forEach((div) => (div.style.display = "none"));
+      const id = this.value;
+      const zonaActiva = document.getElementById("zona-estacion-" + id);
+      if (zonaActiva) zonaActiva.style.display = "block";
+    });
+
+    comboEstacion.addEventListener("change", async function () {
+      const destino = this.value;
+      const display = document.getElementById("tiempo-llegada");
+
+      if (!estacionActualTren || !sentidoTren) {
+        display.textContent = "⏳ Esperando datos del tren...";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/tren/Tiempollegada?origen=${encodeURIComponent(estacionActualTren)}&destino=${encodeURIComponent(destino)}&sentido=${encodeURIComponent(sentidoTren)}`);
+        const data = await res.json();
+
+        if (!data.tiempo || data.tiempo <= 0) {
+          display.textContent = "🚆 El tren ya pasó por esa estación.";
+          return;
+        }
+
+        iniciarCronometro(data.tiempo);
+      } catch (error) {
+        console.error("Error al calcular tiempo:", error);
+        document.getElementById("tiempo-llegada").textContent = "❌ No se pudo calcular el tiempo.";
+      }
+    });
+  });
+
+  function iniciarCronometro(tiemposegundos) {
+    clearInterval(intervaloCronometro);
+
+    let segundosTotales = tiemposegundos;
+    const display = document.getElementById("tiempo-llegada");
+
+    const actualizarDisplay = () => {
+      const min = String(Math.floor(segundosTotales / 60)).padStart(2, '0');
+      const seg = String(segundosTotales % 60).padStart(2, '0');
+      display.textContent = `⏳ Tiempo estimado: ${min}:${seg}`;
+
+      if (segundosTotales <= 0) {
+        clearInterval(intervaloCronometro);
+        display.textContent = "🚆 El tren ya debería haber llegado.";
+      }
+
+      segundosTotales--;
+    };
+
+    actualizarDisplay();
+    intervaloCronometro = setInterval(actualizarDisplay, 1000);
+  }
+
+  function obtenerIconoClima(descripcion) {
+    switch (descripcion.toLowerCase()) {
+      case 'soleado': return '☀️';
+      case 'nublado': return '⛅';
+      case 'lluvia': return '🌧️';
+      case 'tormenta': return '🌩️';
+      case 'viento': return '💨';
+      case 'nevado': return '❄️';
+      default: return '🌤️';
+    }
+  }
+
+  async function actualizarClimas() {
+    try {
+      const response = await fetch('/api/tren/clima');
+      const data = await response.json();
+      for (const estacionId in data) {
+        const icon = document.getElementById(`icon-${estacionId}`);
+        const temp = document.getElementById(`temp-${estacionId}`);
+        const cond = document.getElementById(`cond-${estacionId}`);
+        if (icon) icon.textContent = obtenerIconoClima(data[estacionId].descripcion);
+        if (temp) temp.textContent = `${data[estacionId].temperatura}°C`;
+        if (cond) cond.textContent = data[estacionId].descripcion;
+      }
+    } catch (error) {
+      console.error("Error actualizando clima:", error);
+    }
+  }
+
+  window.onload = () => {
+    actualizarClimas();
+    setInterval(actualizarClimas, 10000);
+  };
+</script>
+</body>
+</html>

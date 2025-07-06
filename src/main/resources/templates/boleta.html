@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vista General del Sistema</title>
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+  <style>
+    #info-tren {
+      background-color: #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body class="container mt-4">
+<div class="row">
+  <!-- Sección principal -->
+  <div class="col-md-8">
+    <h1>Sistema de Zonas Turísticas - MTC</h1>
+
+    <h2 class="mt-4">Estaciones y Zonas Turísticas</h2>
+    <table class="table table-bordered">
+      <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Estación</th>
+        <th>Zonas Turísticas</th>
+        <th>Clima</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="estacion, iterStat : ${estaciones}">
+        <td th:text="${iterStat.index + 1}">1</td>
+        <td th:text="${estacion.nombre_estacion}">Nombre</td>
+        <td></td>
+        <td>
+          <!-- Clima extraído del mapa climaPorEstacion -->
+          <img
+                  th:src="@{'http://openweathermap.org/img/wn/'
+                     + ${climaPorEstacion[estacion.id_estacion].icono} + '@2x.png'}"
+                  width="32" height="32" alt="icono"/>
+          <div th:text="${climaPorEstacion[estacion.id_estacion].temperatura} + ' °C'">-- °C</div>
+          <div style="font-size:0.8em; color:gray;"
+               th:text="'Min: ' + ${climaPorEstacion[estacion.id_estacion].minima}
+                      + ' / Max: ' + ${climaPorEstacion[estacion.id_estacion].maxima}">Min: -- / Max: --</div>
+          <div style="font-size:0.8em;" th:text="${climaPorEstacion[estacion.id_estacion].condicion}">condición</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Botón que abre el modal -->
+    <button
+            type="button"
+            class="btn btn-success mt-4"
+            data-bs-toggle="modal"
+            data-bs-target="#modalCompra"
+    >
+      Comprar Boleto
+    </button>
+
+    <!-- Modal con formulario -->
+    <div
+            class="modal fade"
+            id="modalCompra"
+            tabindex="-1"
+            aria-labelledby="modalCompraLabel"
+            aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form th:action="@{/viaje/calcular-tiempo-real}" method="get">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalCompraLabel">
+                Comprar Boleto de Viaje
+              </h5>
+              <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Cerrar"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Tu estación actual:</label>
+                <select class="form-select" name="estacionOrigen" required>
+                  <option
+                          th:each="estacion : ${estaciones}"
+                          th:value="${estacion.ordenEstacion}"
+                          th:text="${estacion.nombre_estacion}"
+                  ></option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Estación destino:</label>
+                <select
+                        class="form-select"
+                        name="estacionDestino"
+                        id="selectDestino"
+                        required
+                >
+                  <option
+                          th:each="estacion : ${estaciones}"
+                          th:value="${estacion.ordenEstacion}"
+                          th:text="${estacion.nombre_estacion}"
+                  ></option>
+                </select>
+              </div>
+
+              <!-- Contenedor de zonas (oculto hasta que se seleccione algo) -->
+              <div class="mt-3" id="zonaContainer">
+                <h6>Zonas Turísticas Disponibles:</h6>
+                <div
+                        th:each="estacion : ${estaciones}"
+                        th:id="'zona-estacion-' + ${estacion.ordenEstacion}"
+                        style="display: none"
+                >
+                  <table class="table table-sm table-bordered">
+                    <thead>
+                    <tr>
+                      <th>Seleccionar</th>
+                      <th>Nombre</th>
+                      <th>Dirección</th>
+                      <th>Duración (min)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="zona : ${estacion.zonas}">
+                      <td>
+                        <input
+                                class="form-check-input"
+                                type="radio"
+                                name="idZona"
+                                th:value="${zona.id}"
+                                required
+                        />
+                      </td>
+                      <td th:text="${zona.nombre}">Nombre zona</td>
+                      <td th:text="${zona.direccion}">Dirección</td>
+                      <td th:text="${zona.duracionCaminata}">0</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Iniciar Viaje
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección derecha -->
+  <div class="col-md-4">
+    <div id="info-tren" class="shadow-sm">
+      <h4>📍 Posición Actual del Tren</h4>
+      <p>
+        <strong>El tren esta en la estación:</strong>
+        <span id="posicion-tren">Cargando...</span>
+      </p>
+      <p>
+        <strong>El tren esta de:</strong>
+        <span id="direccion-tren">Cargando...</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Estado dinámico del tren -->
+<script>
+  function actualizarEstadoTren() {
+    fetch("/api/tren/estado")
+            .then((res) => res.json())
+            .then((data) => {
+              document.getElementById("posicion-tren").textContent =
+                      data.estacion;
+              document.getElementById("direccion-tren").textContent =
+                      data.direccion;
+            })
+            .catch((err) =>
+                    console.error("Error al obtener estado del tren:", err)
+            );
+  }
+
+  setInterval(actualizarEstadoTren, 1000);
+  actualizarEstadoTren();
+</script>
+
+<!-- Mostrar zonas al elegir estación destino -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectDestino = document.getElementById("selectDestino");
+    const todasZonas = document.querySelectorAll('[id^="zona-estacion-"]');
+
+    selectDestino.addEventListener("change", function () {
+      todasZonas.forEach((div) => (div.style.display = "none"));
+      const id = this.value;
+      const zonaActiva = document.getElementById("zona-estacion-" + id);
+      if (zonaActiva) {
+        zonaActiva.style.display = "block";
+      }
+    });
+  });
+</script>
+</body>
+</html>
