@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todas las Zonas Turísticas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .card {
+            border: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fff;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0d6efd;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-text span {
+            color: #495057;
+        }
+
+        .btn-primary {
+            padding: 0.6rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 30px;
+            background-color: #0d6efd;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #084298;
+        }
+
+        .no-zonas {
+            padding: 2rem;
+            border-radius: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+
+        .titulo-zonas {
+            background-color: #0d6efd;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+<div class="container py-5">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="titulo-zonas">Todas las Zonas Turísticas</h1>
+            <a th:href="@{'/inicio/menu'}" class="btn btn-primary shadow-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+
+        </div>
+        <div th:if="${zonas.isEmpty()}" class="no-zonas text-center">
+        <strong>Atención:</strong> No hay zonas turísticas registradas aún.
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${!zonas.isEmpty()}">
+        <div class="col" th:each="zona : ${zonas}">
+            <div class="card h-100">
+                <img src="" alt="Imagen zona turística" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${zona.nombre}">Nombre</h5>
+                    <p class="card-text mb-2">
+                        <strong>Estacion</strong> <span th:text="${zona.estacion.ordenEstacion}+' - '+${zona.estacion.nombre_estacion}">Estacion</span>
+                    </p>
+                    <p class="card-text mb-2">
+                        <strong>Dirección:</strong> <span th:text="${zona.direccion}">Dirección</span>
+                    </p>
+                    <p class="card-text mb-2">
+                        <strong>Caminata:</strong> <span th:text="${zona.duracionCaminata}">Duración</span>
+                    </p>
+                    <p class="card-text">
+                        <strong>Descripción:</strong> <span th:text="${zona.descripcion}">Descripción</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a th:href="@{'/inicio/menu'}" class="btn btn-primary shadow-sm">Volver</a>
+    </div>
+</div>
+</div>
+</body>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<!-- JS para cargar imágenes dinámicamente -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll(".card");
+
+        const normalizarNombre = (texto) => {
+            return texto
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")     // tildes
+                .replace(/[^\w\s]/gi, "")            // signos raros
+                .replace(/\s+/g, " ")                // dobles espacios
+                .trim();
+        };
+
+        cards.forEach((card) => {
+            const nombreZona = card.querySelector(".card-title")?.innerText.trim();
+            const img = card.querySelector("img");
+
+            if (nombreZona && img) {
+                const nombreLimpio = normalizarNombre(nombreZona);
+                img.src = "/img/" + nombreLimpio + ".jpg"; // ejemplo: /img/Parque del Amor.jpg
+            }
+        });
+    });
+</script>
+</html>

@@ -14,12 +14,27 @@
   <!-- Sección principal -->
   <div class="col-lg-9">
     <div class="header-box">
-      <h1>Sistema de Zonas Turísticas – MTC</h1>
+      <h1>VíaTur – MTC</h1>
     </div>
 
     <!-- Subtítulo con subrayado -->
     <h2 class="subtitle-box">Catálogo de Estaciones</h2>
-
+    <!-- Botón "Zonas Turísticas" alineado a la derecha -->
+    <div class="d-flex justify-content-end mb-3">
+      <a th:href="@{/zonas/ListarZonas}" class="btn btn-outline-primary shadow-sm">
+        <i class="bi bi-map-fill me-1"></i> Zonas Turísticas
+      </a>
+    </div>
+    <!-- Buscar Estaciones -->
+    <div class="mb-4">
+      <div class="input-group">
+        <input id="buscador-estacion" type="text" class="form-control"
+               placeholder="Buscar estación por nombre o número de estación..." />
+        <span class="btn btn-primary">
+      <i class="bi bi-search me-1"></i> Buscar
+    </span>
+      </div>
+    </div>
     <!-- Cards -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
       <div class="col" th:each="estacion, iterStat : ${estaciones}">
@@ -275,11 +290,10 @@
           </option>
         </select>
       </div>
+      <div>
+        <div id="tiempo-llegada" class="mt-2 text-muted fw-semibold"></div>
+      </div>
     </div>
-
-    <di>
-      <div id="tiempo-llegada" class="mt-2 text-muted fw-semibold"></div>
-    </di>
 
   </div>
 
@@ -352,8 +366,23 @@
         iniciarCronometro(data.tiempo);
       } catch (error) {
         console.error("Error al calcular tiempo:", error);
-        document.getElementById("tiempo-llegada").textContent = "❌ No se pudo calcular el tiempo.";
+        document.getElementById("tiempo-llegada").textContent = "No se pudo calcular el tiempo.";
       }
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputBuscador = document.getElementById("buscador-estacion");
+
+    inputBuscador.addEventListener("input", function () {
+      const filtro = this.value.trim().toLowerCase();
+      const cards = document.querySelectorAll(".row .col");
+
+      cards.forEach(card => {
+        const textoNombre = card.querySelector(".card-header strong")?.textContent.toLowerCase() || "";
+        const coincide = textoNombre.includes(filtro); // busca por cualquier letra, sin mínimo
+        card.style.display = coincide ? "block" : "none";
+      });
     });
   });
 

@@ -8,5 +8,6 @@ public interface SerZona {
 
     public abstract List<Zonaturistica> buscarPorEstacion(int estacionId);
     public abstract Zonaturistica buscarPoridZona(int id);
+    public abstract List<Zonaturistica> listazonas();
 
 }

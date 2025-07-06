@@ -29,4 +29,9 @@ public class implZona implements SerZona {
     public Zonaturistica buscarPoridZona(int id) {
         return zonaRepo.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Zonaturistica> listazonas() {
+        return zonaRepo.findAll();
+    }
 }

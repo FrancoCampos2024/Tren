@@ -1,5 +1,6 @@
 package com.example.tren.Controladores;
 
+import com.example.tren.Servicios.SerEstacion;
 import com.example.tren.Servicios.SerZona;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,9 +18,21 @@ public class ZonaControlador {
     @Qualifier("zonaTurisService")
     private SerZona zonaService;
 
+    @Autowired
+    @Qualifier("estacionService")
+    private SerEstacion estacionService;
+
     @GetMapping("/{idEstacion}")
     public String mostrarZonas(@PathVariable int idEstacion, Model model) {
+
+        model.addAttribute("estacion",estacionService.buscarEstacion(idEstacion).getNombre_estacion());
         model.addAttribute("zonas", zonaService.buscarPorEstacion(idEstacion));
         return "Zona";
+    }
+
+    @GetMapping("/ListarZonas")
+    public String listarzonas( Model model) {
+        model.addAttribute("zonas", zonaService.listazonas());
+        return "ListaZonasTuristicas";
     }
 }
