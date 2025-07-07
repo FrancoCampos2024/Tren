@@ -1,6 +1,5 @@
 package com.example.tren.Entidades;
 
-
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class TrenHorario {
             while (true) {
                 try {
                     Thread.sleep(2000);
-                    int nuevaPosicion = tren.avanzar();
+                    tren.avanzar();
                     // System.out.println("Tren llegó a estación " + nuevaPosicion);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

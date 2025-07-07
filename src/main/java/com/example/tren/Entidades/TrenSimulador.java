@@ -1,6 +1,5 @@
 package com.example.tren.Entidades;
 
-
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,7 +16,6 @@ public class TrenSimulador {
             "Soleado", "Nublado", "Lluvia", "Tormenta", "Viento", "Nevado"
     };
 
-
     public Map<Integer, Clima> generarClimaParaEstacionesMap() {
         climaActualPorEstacion.clear();
 
@@ -29,11 +27,11 @@ public class TrenSimulador {
             List<String> climasPosibles = new ArrayList<>();
 
             if (temperatura <= 0) {
-                climasPosibles = List.of("Nevado", "Nublado");
+                climasPosibles = List.of("Nevado", "Nublado", "Viento", "Tormenta");
             } else if (temperatura <= 10) {
-                climasPosibles = List.of("Lluvia", "Nublado", "Viento");
+                climasPosibles = List.of("Lluvia", "Nublado", "Viento", "Tormenta");
             } else if (temperatura <= 20) {
-                climasPosibles = List.of("Nublado", "Viento", "Lluvia", "Soleado");
+                climasPosibles = List.of("Nublado", "Viento", "Lluvia");
             } else if (temperatura <= 30) {
                 climasPosibles = List.of("Soleado", "Viento", "Nublado");
             } else {
@@ -46,13 +44,9 @@ public class TrenSimulador {
         return climaActualPorEstacion;
     }
 
-
-    public  Map<Integer, Clima> getClimaActualPorEstacion(){
+    public Map<Integer, Clima> getClimaActualPorEstacion() {
         return climaActualPorEstacion;
     }
-
-
-
 
     public synchronized int avanzar() {
         if (haciaAdelante) {
