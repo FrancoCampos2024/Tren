@@ -217,6 +217,11 @@
               </table>
             </div>
           </div>
+
+          <div id="zonaError" class="text-danger small mt-1" style="display:none;">
+            ❗ Por favor, selecciona una zona turística.
+          </div>
+
         </div>
 
         <div class="modal-footer d-flex justify-content-end gap-2">
@@ -320,6 +325,38 @@
     </div>
   </div>
 </div>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectDestino = document.getElementById("selectDestino");
+    const todasZonas = document.querySelectorAll('[id^="zona-estacion-"]');
+    const zonaError = document.getElementById("zonaError");
+
+    selectDestino.addEventListener("change", function () {
+      // 1) Deselecciona cualquier radio previo:
+      document.querySelectorAll('input[name="idZona"]').forEach(radio => {
+        radio.checked = false;
+      });
+
+      // 2) Oculta el mensaje de error (si estaba visible):
+      zonaError.style.display = 'none';
+
+      // 3) Oculta todas las zonas
+      todasZonas.forEach(div => div.style.display = "none");
+
+      // 4) Muestra sólo las zonas de la nueva estación:
+      const id = this.value;
+      const zonaActiva = document.getElementById("zona-estacion-" + id);
+      if (zonaActiva) {
+        zonaActiva.style.display = "block";
+      }
+    });
+
+    // (mantén tu listener de submit para validar idZona y mostrar zonaError)
+  });
+</script>
 
 
 
