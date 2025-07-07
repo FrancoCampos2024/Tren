@@ -76,18 +76,54 @@ h1, h2, h4 {
     color: #495057;
     font-weight: 500;
 }
+/* 5. Botón “Comprar Boleto” — Estilo mejorado */
 .btn-success {
-    padding: 0.58rem 1.8rem;
-    font-weight: 600;
-    font-size: 1.07rem;
-    border-radius: 2rem;
-    background: linear-gradient(90deg, #29c76f 85%, #45e08b 100%);
+    display: inline-block;
+    width: 100%;                    /* ocupa todo el ancho del contenedor */
+    padding: 0.75rem 1.8rem;        /* un pelín más alto */
+    font-weight: 700;
+    font-size: 1.15rem;
+    border-radius: 2.5rem;
+    background: linear-gradient(135deg, #29c76f 0%, #45e08b 100%);
     border: none;
-    box-shadow: 0 4px 12px rgba(39,174,96,0.08);
-    transition: background 0.14s;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(39,174,96,0.2);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+
+/* Efecto “brillo” al pasar el ratón */
+.btn-success::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;             /* fuera completamente a la izquierda */
+    width: 50%;              /* franja ancha para cubrir bien en diagonal */
+    height: 200%;            /* alto suficiente para la inclinación */
+    background: rgba(255,255,255,0.4);
+    transform: skewX(-25deg);
+    /* sin transición por defecto */
+}
+.btn-success:hover::before {
+    animation: shine-diag 0.8s ease-out forwards;
+}
+
+
+/* Elevación y ligero zoom en hover */
 .btn-success:hover {
-    background: #168f49 !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(39,174,96,0.3);
+}
+
+
+@keyframes shine-diag {
+    from {
+        left: -100%;
+    }
+    to {
+        left: 150%;            /* termina fuera a la derecha */
+    }
 }
 /* Modal empresarial */
 .modal-content {
@@ -195,9 +231,14 @@ h1, h2, h4 {
 
 /* Asegúrate de que tu .header-box tenga fondo primary */
 .header-box {
+    position: relative;          /* para que left + transform funcionen */
+    width: 75vw;                /* ocupa todo el ancho del viewport */
+    left: 50%;                   /* lo situamos en el centro del contenedor */
+    transform: translateX(-50%); /* y lo desplazamos la mitad de su propio ancho */
+
     background-color: #0d6efd;
     padding: 1rem 2rem;
-    clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
     margin-bottom: 1.5rem;
 }
 
@@ -230,6 +271,60 @@ h1, h2, h4 {
     border-radius: 2px;
 }
 
+
+
+
+/*------------------------------------------------------*/
+/* Fija todo el bloque (widget + botón) en pantalla */
+#fixed-panel {
+    position: fixed;
+    top: 24px;        /* mismo top que tenías con sticky */
+    right: 2rem;      /* ajusta este valor según tu padding lateral */
+    width: 265px;     /* mismo ancho que #info-tren */
+    z-index: 1000;
+}
+
+/* Retira cualquier sticky de #info-tren */
+#info-tren {
+    position: static !important;
+}
+
+
+/* Asterisco rojo para campos obligatorios */
+.required {
+    color: red;
+    margin-left: 0.1rem;   /* espacio suave */
+}
+
+
+/* ==============================
+   Botón “Cancelar” tamaño/formato
+   ============================== */
+.modal-footer .btn-outline-secondary {
+    /* Match the pill shape and size of the success button */
+    padding: 0.75rem 1.8rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+    border-radius: 2.5rem;
+    min-width: 180px;
+
+    /* Keep outline-secondary styling */
+    background: #fff;                /* fondo blanco */
+    color: #6c757d !important;       /* gris Bootstrap */
+    border: 2px solid #6c757d;
+
+    /* Same box-shadow and hover lift, but subdued */
+    box-shadow: 0 4px 12px rgba(108,117,125,0.15);
+    transition: background-color 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.modal-footer .btn-outline-secondary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(108,117,125,0.35);
+    background-color: #6c757d;   /* gris oscuro sólido */
+    color: #fff !important;       /* texto blanco para contraste */
+    border-color: #6c757d;
+}
 
 
 
