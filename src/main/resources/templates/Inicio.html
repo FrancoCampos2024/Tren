@@ -67,15 +67,7 @@
         </div>
       </div>
     </div>
-    <!-- Botón de compra -->
-    <button
-  type="button"
-  class="btn btn-success mt-4 shadow-sm"
-  data-bs-toggle="modal"
-  data-bs-target="#modalCompra"
->
-  <i class="bi bi-ticket-perforated-fill me-1"></i> Comprar Boleto
-</button>
+
 
 <!-- Modal -->
 <div
@@ -271,13 +263,13 @@
         <span id="direccion-tren" class="fw-semibold text-primary">Cargando...</span>
       </div>
 
-      <div class="mt-3 p-3 shadow-sm" style="background:#fff; border-radius:12px; border:1px solid rgba(13,110,253,0.1);">
-        <label for="selectEstacionUsuario" class="form-label fw-bold mb-1">
-          Selecciona tu estación:
+      <div class="custom-select-wrapper mb-3">
+        <label for="selectEstacionUsuario" class="form-label fw-bold">
+          <i class="bi bi-train-front-fill me-2"></i> Selecciona tu estación:
         </label>
         <select
                 id="selectEstacionUsuario"
-                class="form-select form-select-sm"
+                class="form-select"
                 onchange="actualizarUsuarioEstacion(this.value)"
         >
           <option value="" disabled selected>-- Elige estación --</option>
@@ -290,8 +282,21 @@
           </option>
         </select>
       </div>
+
       <div>
         <div id="tiempo-llegada" class="mt-2 text-muted fw-semibold"></div>
+      </div>
+      
+      <div>
+        <!-- Botón de compra -->
+        <button
+                type="button"
+                class="btn btn-success mt-4 shadow-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCompra"
+        >
+          <i class="bi bi-ticket-perforated-fill me-1"></i> Comprar Boleto
+        </button>
       </div>
     </div>
 
