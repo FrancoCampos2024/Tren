@@ -10,6 +10,9 @@
   <link rel="stylesheet" th:href="@{/css/estilos.css}" href="/css/estilos.css" />
 </head>
 <body class="container-fluid py-4">
+<!-- iframe oculto para manejar la descarga del PDF -->
+<iframe name="downloadFrame" id="downloadFrame" style="display:none;"></iframe>
+
 <div class="row gx-4">
   <!-- Sección principal -->
   <div class="col-lg-9">
@@ -79,8 +82,8 @@
 >
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form th:action="@{/viaje/guardar-boleta}" method="post">
-        <div class="modal-header bg-gradient bg-primary text-white">
+      <form id="formCompraBoleta" th:action="@{/viaje/guardar-boleta}" method="post" target="downloadFrame">
+        <div class="modal-footer d-flex justify-content-end gap-2">
           <h5 class="modal-title">
             <i class="bi bi-ticket-perforated-fill me-2"></i> Comprar Boleto de Viaje
           </h5>
@@ -113,13 +116,17 @@
                 <i class="bi bi-phone-fill me-1"></i> Tu número de teléfono:<span class="required">*</span>
               </label>
               <input
-                type="text"
-                name="telefonoCliente"
-                class="form-control"
-                required
-                minlength="9"
-                maxlength="15"
-                placeholder="Ej. 987654321"
+                      type="tel"
+                      name="telefonoCliente"
+                      class="form-control"
+                      required
+                      minlength="9"
+                      maxlength="15"
+                      pattern="\d{9,15}"
+                      inputmode="numeric"
+                      title="Sólo números. Entre 9 y 15 dígitos."
+                      placeholder="Ej. 987654321"
+                      id="telefonoCliente"
               />
             </div>
           </div>
@@ -161,11 +168,7 @@
               <i class="bi bi-flag-fill me-1 text-success"></i> Estación destino:<span class="required">*</span>
             </label>
             <select
-              class="form-select"
-              name="estacionDestino"
-              id="selectDestino"
-              required
-            >
+              class="form-select" name="estacionDestino" id="selectDestino" required>
               <option value="">Seleccione...</option>
               <option
                 th:each="estacion : ${estaciones}"
@@ -304,6 +307,98 @@
   </div>
 </div>
 
+
+
+<!-- Toast de confirmación en esquina superior izquierda -->
+<div class="position-fixed top-0 start-0 p-3" style="z-index: 1100;">
+  <div id="toastConfirm" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        ✔️ ¡Compra exitosa!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+    </div>
+  </div>
+</div>
+
+
+
+<!--============VALIDACION DE NOMBRES IGUALES DE ESTACIONES AL COMPRAR===============================-->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const origen = document.querySelector('select[name="estacionOrigen"]');
+    const destino = document.getElementById('selectDestino');
+
+    function actualizarDestino() {
+      const valOrigen = origen.value;
+
+      // Recorremos todas las opciones de destino
+      Array.from(destino.options).forEach(opt => {
+        // Habilitamos todo por defecto...
+        opt.disabled = false;
+        // ...y luego deshabilitamos la que coincida con origen (excepto el placeholder)
+        if (opt.value && opt.value === valOrigen) {
+          opt.disabled = true;
+        }
+      });
+
+      // Si el destino actual coincide con origen, lo limpiamos
+      if (destino.value === valOrigen) {
+        destino.value = '';
+      }
+    }
+
+    origen.addEventListener('change', actualizarDestino);
+    destino.addEventListener('change', () => {
+      // Validación extra: si coinciden, mostramos mensaje
+      if (destino.value === origen.value) {
+        destino.setCustomValidity('Origen y destino no pueden ser iguales');
+      } else {
+        destino.setCustomValidity('');
+      }
+    });
+  });
+</script>
+
+<!--================VALIDACION DEL CAMPO DE TELEFONO AL COMPRAR=======================-->
+<script>
+  // Seleccionamos el input
+  const telInput = document.getElementById('telefonoCliente');
+
+  // En cada cambio de valor, eliminamos todo lo que no sea dígito
+  telInput.addEventListener('input', (e) => {
+    const soloDigitos = e.target.value.replace(/\D+/g, '');
+    if (e.target.value !== soloDigitos) {
+      e.target.value = soloDigitos;
+    }
+  });
+</script>
+<!--=============================================================================================================-->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Referencias
+    const toastEl = document.getElementById('toastConfirm');
+    const toast = new bootstrap.Toast(toastEl, { delay: 1500 });
+    const form = document.getElementById('formCompraBoleta');
+    const modalEl = document.getElementById('modalCompra');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+
+    // 1) Al enviar el formulario...
+    form.addEventListener('submit', function(e) {
+      // NO detener el envío: dejamos que el form se envíe al iframe → genera la boleta.
+      toast.show();      // mostramos el toast inmediatamente
+      modal.hide();      // cerramos el modal
+    });
+
+    // 2) Cuando el toast termine de ocultarse...
+    toastEl.addEventListener('hidden.bs.toast', () => {
+      // redirigimos al menú principal
+      window.location.href = '/inicio/menu';
+    });
+  });
+</script>
 
 
 

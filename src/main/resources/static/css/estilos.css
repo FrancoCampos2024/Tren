@@ -326,7 +326,20 @@ h1, h2, h4 {
     border-color: #6c757d;
 }
 
+/* Toast más grande */
+#toastConfirm {
+    min-width: 350px;           /* amplía el ancho */
+    font-size: 1.2rem;          /* texto más grande */
+    padding: 1rem 2.25rem;      /* más espacio interno */
+}
 
+#toastConfirm .toast-body {
+    padding: 0;                 /* elimina el padding extra */
+}
+
+#toastConfirm .btn-close {
+    margin: 0 0.5rem 0 1rem;    /* ajusta el espaciado del close */
+}
 
 
 
